@@ -29,6 +29,16 @@
       "dateReceived": "2026-01-20",
       "stockReceived": 200,
       "expiryDate": "2027-01-20"
+    },
+    {
+      "id": "3afb",
+      "name": "Snd paper",
+      "category": "Tools",
+      "price": 150,
+      "image": "https://sanpaper.org",
+      "dateReceived": "2026-01-20",
+      "stockReceived": 200,
+      "expiryDate": "2027-01-20"
     }
   ],
   "sales": [
@@ -66,6 +76,13 @@
       "dateSold": "2026-01-20",
       "quantitySold": 30,
       "price": 200
+    },
+    {
+      "id": "e4c3",
+      "productId": "3afb",
+      "dateSold": "2026-01-20",
+      "quantitySold": 120,
+      "price": 150
     }
   ]
 }

@@ -112,11 +112,11 @@ function Inventory() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold mb-6">Hardware Inventory Management</h1>
+    <div className="min-h-screen bg-gray-100 p-4 sm:p-6">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6">Hardware Inventory Management</h1>
 
       {/* PRODUCT FORM */}
-      <form onSubmit={addProduct} className="bg-white p-4 rounded shadow mb-8 grid grid-cols-3 gap-4">
+      <form onSubmit={addProduct} className="bg-white p-4 rounded shadow mb-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <input className="border p-2" name="name" placeholder="Product Name" value={form.name} onChange={handleChange} />
         <input className="border p-2" name="category" placeholder="Category" value={form.category} onChange={handleChange} />
         <input className="border p-2" name="price" placeholder="Price" value={form.price} onChange={handleChange} />
@@ -127,13 +127,13 @@ function Inventory() {
 
         <input className="border p-2" type="date" name="expiryDate" placeholder="Expiry Date" value={form.expiryDate} onChange={handleChange} />
 
-        <button className="col-span-3 bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+        <button className="col-span-1 sm:col-span-2 md:col-span-3 bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
           Save Record
         </button>
       </form>
 
       {/* FILTER BAR */}
-      <div className="bg-white p-4 rounded shadow mb-4 flex gap-4">
+      <div className="bg-white p-4 rounded shadow mb-4 flex flex-col sm:flex-row gap-4">
         <input className="border p-2" name="name" placeholder="Filter by Name" value={filters.name} onChange={handleFilterChange} />
         <input className="border p-2" name="category" placeholder="Filter by Category" value={filters.category} onChange={handleFilterChange} />
         <input className="border p-2" name="price" placeholder="Min Price" value={filters.price} onChange={handleFilterChange} />
@@ -141,20 +141,20 @@ function Inventory() {
 
       {/* INVENTORY TABLE */}
       <div className="bg-white rounded shadow overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-xs sm:text-sm">
           <thead className="bg-gray-200">
             <tr>
-              <th className="p-2">Image</th>
-              <th className="p-2">Product</th>
-              <th className="p-2">Category</th>
-              <th className="p-2">Price</th>
-              <th className="p-2">Date Received</th>
-              <th className="p-2">Stock Received</th>
-              <th className="p-2">Total Stock</th>
-              <th className="p-2">Total Sold</th>
-              <th className="p-2">Balance</th>
-              <th className="p-2">Expiry Date</th>
-              <th className="p-2">Sell</th>
+              <th className="p-1 sm:p-2">Image</th>
+              <th className="p-1 sm:p-2">Product</th>
+              <th className="p-1 sm:p-2">Category</th>
+              <th className="p-1 sm:p-2">Price</th>
+              <th className="p-1 sm:p-2 hidden md:table-cell">Date Received</th>
+              <th className="p-1 sm:p-2">Stock Received</th>
+              <th className="p-1 sm:p-2">Total Stock</th>
+              <th className="p-1 sm:p-2">Total Sold</th>
+              <th className="p-1 sm:p-2">Balance</th>
+              <th className="p-1 sm:p-2 hidden lg:table-cell">Expiry Date</th>
+              <th className="p-1 sm:p-2">Sell</th>
             </tr>
           </thead>
           <tbody>
@@ -163,23 +163,23 @@ function Inventory() {
               const totalSold = calculateTotalSold(p.id);
               return (
                 <tr key={p.id} className={`border-t text-center ${isExpiringSoon ? 'bg-red-100' : ''}`}>
-                  <td className="p-2">
-                    <img src={p.image} alt={p.name} className="w-16 h-16 object-cover mx-auto" />
+                  <td className="p-1 sm:p-2">
+                    <img src={p.image} alt={p.name} className="w-12 h-12 sm:w-16 sm:h-16 object-cover mx-auto" />
                   </td>
-                  <td className="p-2">{p.name}</td>
-                  <td className="p-2">{p.category}</td>
-                  <td className="p-2">KES {p.price}</td>
-                  <td className="p-2">{dayjs(p.dateReceived).format("DD MMM YYYY")}</td>
-                  <td className="p-2">{p.stockReceived}</td>
-                  <td className="p-2 font-semibold">
+                  <td className="p-1 sm:p-2">{p.name}</td>
+                  <td className="p-1 sm:p-2">{p.category}</td>
+                  <td className="p-1 sm:p-2">KES {p.price}</td>
+                  <td className="p-1 sm:p-2 hidden md:table-cell">{dayjs(p.dateReceived).format("DD MMM YYYY")}</td>
+                  <td className="p-1 sm:p-2">{p.stockReceived}</td>
+                  <td className="p-1 sm:p-2 font-semibold">
                     {calculateTotalStock(p.stockReceived)}
                   </td>
-                  <td className="p-2">{totalSold}</td>
-                  <td className={`p-2 font-bold ${calculateBalance(p.stockReceived, p.id) < 10 ? "text-red-600" : ""}`}>
+                  <td className="p-1 sm:p-2">{totalSold}</td>
+                  <td className={`p-1 sm:p-2 font-bold ${calculateBalance(p.stockReceived, p.id) < 10 ? "text-red-600" : ""}`}>
                     {calculateBalance(p.stockReceived, p.id)}
                   </td>
-                  <td className="p-2">{dayjs(p.expiryDate).format("DD MMM YYYY")}</td>
-                  <td className="p-2">
+                  <td className="p-1 sm:p-2 hidden lg:table-cell">{dayjs(p.expiryDate).format("DD MMM YYYY")}</td>
+                  <td className="p-1 sm:p-2">
                     {editingId === p.id ? (
                       <div className="flex flex-col gap-1">
                         <input
@@ -187,18 +187,18 @@ function Inventory() {
                           name="dateSold"
                           value={editForm.dateSold}
                           onChange={handleEditChange}
-                          className="border p-1"
+                          className="border p-1 text-xs"
                         />
                         <input
                           name="quantitySold"
                           placeholder="Quantity"
                           value={editForm.quantitySold}
                           onChange={handleEditChange}
-                          className="border p-1"
+                          className="border p-1 text-xs"
                         />
                         <button
                           onClick={() => addSale(p.id)}
-                          className="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700"
+                          className="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700 text-xs"
                         >
                           Add Sale
                         </button>
@@ -206,7 +206,7 @@ function Inventory() {
                     ) : (
                       <button
                         onClick={() => startEdit(p)}
-                        className="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
+                        className="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 text-xs"
                       >
                         Sell Item
                       </button>
@@ -225,9 +225,9 @@ function Inventory() {
 export default function App() {
   return (
     <div>
-      <nav className="bg-blue-600 text-white p-4">
-        <Link to="/" className="mr-4">Inventory</Link>
-        <Link to="/sales">Sales</Link>
+      <nav className="bg-blue-600 text-white p-4 flex flex-col sm:flex-row gap-2 sm:gap-4">
+        <Link to="/" className="hover:underline">Inventory</Link>
+        <Link to="/sales" className="hover:underline">Sales</Link>
       </nav>
       <Routes>
         <Route path="/" element={<Inventory />} />
