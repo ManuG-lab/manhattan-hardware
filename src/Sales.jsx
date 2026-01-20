@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
-const API_URL = "http://localhost:5000/products";
-const SALES_URL = "http://localhost:5000/sales";
+const API_URL = "https://manhattan-hardware-backend-1.onrender.com/products";
+const SALES_URL = "https://manhattan-hardware-backend-1.onrender.com/sales";
 
 export default function Sales() {
   const [products, setProducts] = useState([]);

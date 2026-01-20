@@ -4,8 +4,8 @@ import { Routes, Route, Link } from "react-router-dom";
 import dayjs from "dayjs";
 import Sales from "./Sales";
 
-const API_URL = "http://localhost:5000/products";
-const SALES_URL = "http://localhost:5000/sales";
+const API_URL = "https://manhattan-hardware-backend-1.onrender.com/products";
+const SALES_URL = "https://manhattan-hardware-backend-1.onrender.com/sales";
 
 function Inventory() {
   const [products, setProducts] = useState([]);
