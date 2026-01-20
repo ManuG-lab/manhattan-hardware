@@ -1,0 +1,71 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "name": "Cement",
+      "category": "Building Materials",
+      "price": 750,
+      "image": "https://via.placeholder.com/100",
+      "dateReceived": "2026-01-15",
+      "stockReceived": 100,
+      "expiryDate": "2026-02-15"
+    },
+    {
+      "id": "b4a1",
+      "name": "Crown Paint Gloss",
+      "category": "Paint",
+      "price": 2000,
+      "image": "https://crown.com",
+      "dateReceived": "2026-01-20",
+      "stockReceived": 100,
+      "expiryDate": "2026-03-20"
+    },
+    {
+      "id": "071a",
+      "name": "Hand Brush",
+      "category": "Tools",
+      "price": 200,
+      "image": "https://paint.com",
+      "dateReceived": "2026-01-20",
+      "stockReceived": 200,
+      "expiryDate": "2027-01-20"
+    }
+  ],
+  "sales": [
+    {
+      "id": "1",
+      "productId": 1,
+      "dateSold": "2026-01-15",
+      "quantitySold": 20,
+      "price": 750
+    },
+    {
+      "id": "2",
+      "productId": "b4a1",
+      "dateSold": "2026-01-20",
+      "quantitySold": 30,
+      "price": 2000
+    },
+    {
+      "id": "5c15",
+      "productId": "071a",
+      "dateSold": "2026-01-20",
+      "quantitySold": 2,
+      "price": 200
+    },
+    {
+      "id": "6eb2",
+      "productId": "1",
+      "dateSold": "2026-01-20",
+      "quantitySold": 30,
+      "price": 750
+    },
+    {
+      "id": "a807",
+      "productId": "071a",
+      "dateSold": "2026-01-20",
+      "quantitySold": 30,
+      "price": 200
+    }
+  ]
+}
