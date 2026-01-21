@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import dayjs from "dayjs";
 import Sales from "./Sales";
+import AddProduct from "./AddProduct";
 
 const API_URL = "https://manhattan-hardware-backend-1.onrender.com/products";
 const SALES_URL = "https://manhattan-hardware-backend-1.onrender.com/sales";
@@ -113,110 +114,103 @@ function Inventory() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:p-6">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6">Hardware Inventory Management</h1>
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-blue-900">Manhattan Enterprises ltd</h1>
+          <p className="text-sm text-gray-600 hidden sm:block">Inventory Management Platform</p>
+        </div>
 
-      {/* PRODUCT FORM */}
-      <form onSubmit={addProduct} className="bg-white p-4 rounded shadow mb-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <input className="border p-2" name="name" placeholder="Product Name" value={form.name} onChange={handleChange} />
-        <input className="border p-2" name="category" placeholder="Category" value={form.category} onChange={handleChange} />
-        <input className="border p-2" name="price" placeholder="Price" value={form.price} onChange={handleChange} />
+        {/* CTA to Add Product */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div className="flex gap-2">
+            <input className="border p-2" name="name" placeholder="Filter by Name" value={filters.name} onChange={handleFilterChange} />
+            <input className="border p-2" name="category" placeholder="Filter by Category" value={filters.category} onChange={handleFilterChange} />
+            <input className="border p-2" name="price" placeholder="Min Price" value={filters.price} onChange={handleFilterChange} />
+          </div>
+          <div className="flex gap-2">
+            <Link to="/add" className="bg-blue-900 text-white px-4 py-2 rounded hover:opacity-90">Add Product</Link>
+          </div>
+        </div>
 
-        <input className="border p-2" name="image" placeholder="Image URL" value={form.image} onChange={handleChange} />
-        <input className="border p-2" type="date" name="dateReceived" value={form.dateReceived} onChange={handleChange} />
-        <input className="border p-2" name="stockReceived" placeholder="Stock Received" value={form.stockReceived} onChange={handleChange} />
-
-        <input className="border p-2" type="date" name="expiryDate" placeholder="Expiry Date" value={form.expiryDate} onChange={handleChange} />
-
-        <button className="col-span-1 sm:col-span-2 md:col-span-3 bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
-          Save Record
-        </button>
-      </form>
-
-      {/* FILTER BAR */}
-      <div className="bg-white p-4 rounded shadow mb-4 flex flex-col sm:flex-row gap-4">
-        <input className="border p-2" name="name" placeholder="Filter by Name" value={filters.name} onChange={handleFilterChange} />
-        <input className="border p-2" name="category" placeholder="Filter by Category" value={filters.category} onChange={handleFilterChange} />
-        <input className="border p-2" name="price" placeholder="Min Price" value={filters.price} onChange={handleFilterChange} />
-      </div>
-
-      {/* INVENTORY TABLE */}
-      <div className="bg-white rounded shadow overflow-x-auto">
-        <table className="w-full text-xs sm:text-sm">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="p-1 sm:p-2">Image</th>
-              <th className="p-1 sm:p-2">Product</th>
-              <th className="p-1 sm:p-2">Category</th>
-              <th className="p-1 sm:p-2">Price</th>
-              <th className="p-1 sm:p-2 hidden md:table-cell">Date Received</th>
-              <th className="p-1 sm:p-2">Stock Received</th>
-              <th className="p-1 sm:p-2">Total Stock</th>
-              <th className="p-1 sm:p-2">Total Sold</th>
-              <th className="p-1 sm:p-2">Balance</th>
-              <th className="p-1 sm:p-2 hidden lg:table-cell">Expiry Date</th>
-              <th className="p-1 sm:p-2">Sell</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredProducts.map(p => {
-              const isExpiringSoon = dayjs(p.expiryDate).diff(dayjs(), 'day') <= 30;
-              const totalSold = calculateTotalSold(p.id);
-              return (
-                <tr key={p.id} className={`border-t text-center ${isExpiringSoon ? 'bg-red-100' : ''}`}>
-                  <td className="p-1 sm:p-2">
-                    <img src={p.image} alt={p.name} className="w-12 h-12 sm:w-16 sm:h-16 object-cover mx-auto" />
-                  </td>
-                  <td className="p-1 sm:p-2">{p.name}</td>
-                  <td className="p-1 sm:p-2">{p.category}</td>
-                  <td className="p-1 sm:p-2">KES {p.price}</td>
-                  <td className="p-1 sm:p-2 hidden md:table-cell">{dayjs(p.dateReceived).format("DD MMM YYYY")}</td>
-                  <td className="p-1 sm:p-2">{p.stockReceived}</td>
-                  <td className="p-1 sm:p-2 font-semibold">
-                    {calculateTotalStock(p.stockReceived)}
-                  </td>
-                  <td className="p-1 sm:p-2">{totalSold}</td>
-                  <td className={`p-1 sm:p-2 font-bold ${calculateBalance(p.stockReceived, p.id) < 10 ? "text-red-600" : ""}`}>
-                    {calculateBalance(p.stockReceived, p.id)}
-                  </td>
-                  <td className="p-1 sm:p-2 hidden lg:table-cell">{dayjs(p.expiryDate).format("DD MMM YYYY")}</td>
-                  <td className="p-1 sm:p-2">
-                    {editingId === p.id ? (
-                      <div className="flex flex-col gap-1">
-                        <input
-                          type="date"
-                          name="dateSold"
-                          value={editForm.dateSold}
-                          onChange={handleEditChange}
-                          className="border p-1 text-xs"
-                        />
-                        <input
-                          name="quantitySold"
-                          placeholder="Quantity"
-                          value={editForm.quantitySold}
-                          onChange={handleEditChange}
-                          className="border p-1 text-xs"
-                        />
+        {/* INVENTORY TABLE */}
+        <div className="bg-white rounded shadow overflow-x-auto">
+          <table className="w-full text-xs sm:text-sm">
+            <thead className="bg-gray-200">
+              <tr>
+                <th className="p-1 sm:p-2">Image</th>
+                <th className="p-1 sm:p-2">Product</th>
+                <th className="p-1 sm:p-2">Category</th>
+                <th className="p-1 sm:p-2">Price</th>
+                <th className="p-1 sm:p-2 hidden md:table-cell">Date Received</th>
+                <th className="p-1 sm:p-2">Stock Received</th>
+                <th className="p-1 sm:p-2">Total Stock</th>
+                <th className="p-1 sm:p-2">Total Sold</th>
+                <th className="p-1 sm:p-2">Balance</th>
+                <th className="p-1 sm:p-2 hidden lg:table-cell">Expiry Date</th>
+                <th className="p-1 sm:p-2">Sell</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredProducts.map(p => {
+                const isExpiringSoon = dayjs(p.expiryDate).diff(dayjs(), 'day') <= 30;
+                const totalSold = calculateTotalSold(p.id);
+                return (
+                  <tr key={p.id} className={`border-t text-center ${isExpiringSoon ? 'bg-red-100' : ''}`}>
+                    <td className="p-1 sm:p-2">
+                      <img src={p.image} alt={p.name} className="w-12 h-12 sm:w-16 sm:h-16 object-cover mx-auto rounded" />
+                    </td>
+                    <td className="p-1 sm:p-2">{p.name}</td>
+                    <td className="p-1 sm:p-2">{p.category}</td>
+                    <td className="p-1 sm:p-2">KES {p.price}</td>
+                    <td className="p-1 sm:p-2 hidden md:table-cell">{dayjs(p.dateReceived).format("DD MMM YYYY")}</td>
+                    <td className="p-1 sm:p-2">{p.stockReceived}</td>
+                    <td className="p-1 sm:p-2 font-semibold">
+                      {calculateTotalStock(p.stockReceived)}
+                    </td>
+                    <td className="p-1 sm:p-2">{totalSold}</td>
+                    <td className={`p-1 sm:p-2 font-bold ${calculateBalance(p.stockReceived, p.id) < 10 ? "text-red-600" : ""}`}>
+                      {calculateBalance(p.stockReceived, p.id)}
+                    </td>
+                    <td className="p-1 sm:p-2 hidden lg:table-cell">{dayjs(p.expiryDate).format("DD MMM YYYY")}</td>
+                    <td className="p-1 sm:p-2">
+                      {editingId === p.id ? (
+                        <div className="flex flex-col gap-1">
+                          <input
+                            type="date"
+                            name="dateSold"
+                            value={editForm.dateSold}
+                            onChange={handleEditChange}
+                            className="border p-1 text-xs"
+                          />
+                          <input
+                            name="quantitySold"
+                            placeholder="Quantity"
+                            value={editForm.quantitySold}
+                            onChange={handleEditChange}
+                            className="border p-1 text-xs"
+                          />
+                          <button
+                            onClick={() => addSale(p.id)}
+                            className="bg-red-600 text-white px-2 py-1 rounded hover:opacity-90 text-xs"
+                          >
+                            Add Sale
+                          </button>
+                        </div>
+                      ) : (
                         <button
-                          onClick={() => addSale(p.id)}
-                          className="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700 text-xs"
+                          onClick={() => startEdit(p)}
+                          className="bg-blue-900 text-white px-2 py-1 rounded hover:opacity-90 text-xs"
                         >
-                          Add Sale
+                          Sell Item
                         </button>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => startEdit(p)}
-                        className="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 text-xs"
-                      >
-                        Sell Item
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
@@ -224,15 +218,38 @@ function Inventory() {
 
 export default function App() {
   return (
-    <div>
-      <nav className="bg-blue-600 text-white p-4 flex flex-col sm:flex-row gap-2 sm:gap-4">
-        <Link to="/" className="hover:underline">Inventory</Link>
-        <Link to="/sales" className="hover:underline">Sales</Link>
-      </nav>
-      <Routes>
-        <Route path="/" element={<Inventory />} />
-        <Route path="/sales" element={<Sales />} />
-      </Routes>
+    <div className="min-h-screen flex flex-col">
+      <header className="bg-blue-900 text-white">
+        <div className="max-w-6xl mx-auto flex items-center justify-between p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-white rounded flex items-center justify-center text-blue-900 font-bold">M</div>
+            <div>
+              <div className="font-bold">Manhattan Enterprises ltd</div>
+              <div className="text-xs text-gray-200">Hardware Inventory</div>
+            </div>
+          </div>
+          <nav className="flex items-center gap-4">
+            <Link to="/" className="text-white hover:underline">Inventory</Link>
+            <Link to="/add" className="text-white hover:underline">Add Product</Link>
+            <Link to="/sales" className="text-white hover:underline">Sales</Link>
+          </nav>
+        </div>
+      </header>
+
+      <main className="flex-1">
+        <Routes>
+          <Route path="/" element={<Inventory />} />
+          <Route path="/add" element={<AddProduct />} />
+          <Route path="/sales" element={<Sales />} />
+        </Routes>
+      </main>
+
+      <footer className="bg-gray-800 text-gray-200">
+        <div className="max-w-6xl mx-auto p-4 flex flex-col sm:flex-row justify-between items-center">
+          <div>© {new Date().getFullYear()} Manhattan Enterprises ltd</div>
+          <div className="text-sm text-gray-400">Built for internal inventory management</div>
+        </div>
+      </footer>
     </div>
   );
 }
