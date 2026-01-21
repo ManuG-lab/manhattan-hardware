@@ -1,9 +1,10 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, Navigate } from "react-router-dom";
 import dayjs from "dayjs";
 import Sales from "./Sales";
 import AddProduct from "./AddProduct";
+import Login from "./Login";
 
 const API_URL = "https://manhattan-hardware-backend-1.onrender.com/products";
 const SALES_URL = "https://manhattan-hardware-backend-1.onrender.com/sales";
@@ -281,6 +282,21 @@ function Inventory() {
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('user')) || null;
+    } catch (e) { return null; }
+  });
+
+  const handleLogin = (u) => {
+    setUser(u);
+    localStorage.setItem('user', JSON.stringify(u));
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -308,6 +324,14 @@ export default function App() {
               <Link to="/" className="text-white hover:underline">Inventory</Link>
               <Link to="/add" className="text-white hover:underline">Add Product</Link>
               <Link to="/sales" className="text-white hover:underline">Sales</Link>
+              {user ? (
+                <div className="flex items-center gap-3">
+                  <div className="text-sm text-gray-200">{user.username}</div>
+                  <button onClick={handleLogout} className="bg-red-600 text-white px-3 py-1 rounded">Logout</button>
+                </div>
+              ) : (
+                <Link to="/login" className="text-white hover:underline">Login</Link>
+              )}
             </nav>
           </div>
         </div>
@@ -317,6 +341,14 @@ export default function App() {
               <Link to="/" onClick={() => setMenuOpen(false)} className="text-white">Inventory</Link>
               <Link to="/add" onClick={() => setMenuOpen(false)} className="text-white">Add Product</Link>
               <Link to="/sales" onClick={() => setMenuOpen(false)} className="text-white">Sales</Link>
+              {user ? (
+                <div className="flex flex-col gap-2">
+                  <div className="text-white">{user.username}</div>
+                  <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="bg-red-600 text-white px-3 py-1 rounded">Logout</button>
+                </div>
+              ) : (
+                <Link to="/login" onClick={() => setMenuOpen(false)} className="text-white">Login</Link>
+              )}
             </div>
           </div>
         )}
@@ -324,9 +356,10 @@ export default function App() {
 
       <main className="flex-1">
         <Routes>
-          <Route path="/" element={<Inventory />} />
-          <Route path="/add" element={<AddProduct />} />
-          <Route path="/sales" element={<Sales />} />
+          <Route path="/" element={user ? <Inventory /> : <Navigate to="/login" replace />} />
+          <Route path="/add" element={user ? <AddProduct /> : <Navigate to="/login" replace />} />
+          <Route path="/sales" element={user ? <Sales /> : <Navigate to="/login" replace />} />
+          <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login onLogin={handleLogin} />} />
         </Routes>
       </main>
 
