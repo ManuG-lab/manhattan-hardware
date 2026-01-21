@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "http://localhost:5000/products";
+const API_URL = "https://manhattan-hardware-backend-1.onrender.com/products";
 
 export default function AddProduct() {
   const navigate = useNavigate();

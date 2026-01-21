@@ -11,6 +11,8 @@ const SALES_URL = "https://manhattan-hardware-backend-1.onrender.com/sales";
 function Inventory() {
   const [products, setProducts] = useState([]);
   const [sales, setSales] = useState([]);
+  const [editProductId, setEditProductId] = useState(null);
+  const [editProductForm, setEditProductForm] = useState({});
   const [form, setForm] = useState({
     name: "",
     category: "",
@@ -82,6 +84,49 @@ function Inventory() {
     });
   };
 
+  const startProductEdit = (product) => {
+    setEditProductId(product.id);
+    setEditProductForm({
+      name: product.name || "",
+      category: product.category || "",
+      price: product.price || "",
+      image: product.image || "",
+      dateReceived: product.dateReceived || dayjs().format("YYYY-MM-DD"),
+      stockReceived: product.stockReceived || 0,
+      expiryDate: product.expiryDate || dayjs().add(1, 'year').format("YYYY-MM-DD")
+    });
+  };
+
+  const handleEditProductChange = (e) => {
+    setEditProductForm({ ...editProductForm, [e.target.name]: e.target.value });
+  };
+
+  const updateProduct = async (id) => {
+    const payload = {
+      ...products.find(p => p.id === id),
+      ...editProductForm,
+      price: Number(editProductForm.price),
+      stockReceived: Number(editProductForm.stockReceived)
+    };
+
+    await fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const updated = await fetch(API_URL).then(res => res.json());
+    setProducts(updated);
+    setEditProductId(null);
+  };
+
+  const deleteProduct = async (id) => {
+    if (!confirm('Delete this product?')) return;
+    await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+    const updated = await fetch(API_URL).then(res => res.json());
+    setProducts(updated);
+  };
+
   const addSale = async (id) => {
     const product = products.find(p => p.id === id);
     const payload = {
@@ -148,6 +193,7 @@ function Inventory() {
                 <th className="p-1 sm:p-2">Balance</th>
                 <th className="p-1 sm:p-2 hidden lg:table-cell">Expiry Date</th>
                 <th className="p-1 sm:p-2">Sell</th>
+                <th className="p-1 sm:p-2">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -203,6 +249,23 @@ function Inventory() {
                         >
                           Sell Item
                         </button>
+                      )}
+                    </td>
+                    <td className="p-1 sm:p-2">
+                      {editProductId === p.id ? (
+                        <div className="flex flex-col gap-1">
+                          <input name="name" value={editProductForm.name} onChange={handleEditProductChange} className="border p-1 text-xs" />
+                          <input name="price" value={editProductForm.price} onChange={handleEditProductChange} className="border p-1 text-xs" />
+                          <div className="flex gap-1">
+                            <button onClick={() => updateProduct(p.id)} className="btn-primary px-2 py-1 rounded text-xs w-full sm:w-auto">Save</button>
+                            <button onClick={() => setEditProductId(null)} className="px-2 py-1 rounded border text-xs w-full sm:w-auto">Cancel</button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex gap-2 justify-center">
+                          <button onClick={() => startProductEdit(p)} className="px-2 py-1 rounded bg-gray-200 text-gray-800 text-xs">Edit</button>
+                          <button onClick={() => deleteProduct(p.id)} className="px-2 py-1 rounded bg-red-600 text-white text-xs">Delete</button>
+                        </div>
                       )}
                     </td>
                   </tr>
