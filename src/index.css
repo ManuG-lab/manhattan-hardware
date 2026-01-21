@@ -1,1 +1,27 @@
 @import "tailwindcss";
+
+:root {
+	--brand-blue: #072146; /* dark blue */
+	--accent-red: #c21807; /* scarlet red */
+	--muted-gray: #6b7280;
+	--bg-white: #ffffff;
+}
+
+.btn-primary {
+	background-color: var(--brand-blue);
+	color: white;
+}
+
+.btn-accent {
+	background-color: var(--accent-red);
+	color: white;
+}
+
+/* small helper for boxed container */
+.app-container {
+	max-width: 1100px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 1rem;
+	padding-right: 1rem;
+}

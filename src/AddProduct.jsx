@@ -43,17 +43,17 @@ export default function AddProduct() {
         <h2 className="text-2xl sm:text-3xl font-bold text-blue-900 mb-4">Add New Product</h2>
 
         <form onSubmit={addProduct} className="bg-white p-4 rounded shadow grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          <input className="border p-2" name="name" placeholder="Product Name" value={form.name} onChange={handleChange} />
-          <input className="border p-2" name="category" placeholder="Category" value={form.category} onChange={handleChange} />
-          <input className="border p-2" name="price" placeholder="Price" value={form.price} onChange={handleChange} />
+          <input className="border p-2 w-full" name="name" placeholder="Product Name" value={form.name} onChange={handleChange} />
+          <input className="border p-2 w-full" name="category" placeholder="Category" value={form.category} onChange={handleChange} />
+          <input className="border p-2 w-full" name="price" placeholder="Price" value={form.price} onChange={handleChange} />
 
-          <input className="border p-2" name="image" placeholder="Image URL" value={form.image} onChange={handleChange} />
-          <input className="border p-2" type="date" name="dateReceived" value={form.dateReceived} onChange={handleChange} />
-          <input className="border p-2" name="stockReceived" placeholder="Stock Received" value={form.stockReceived} onChange={handleChange} />
+          <input className="border p-2 w-full" name="image" placeholder="Image URL" value={form.image} onChange={handleChange} />
+          <input className="border p-2 w-full" type="date" name="dateReceived" value={form.dateReceived} onChange={handleChange} />
+          <input className="border p-2 w-full" name="stockReceived" placeholder="Stock Received" value={form.stockReceived} onChange={handleChange} />
 
-          <input className="border p-2" type="date" name="expiryDate" placeholder="Expiry Date" value={form.expiryDate} onChange={handleChange} />
+          <input className="border p-2 w-full" type="date" name="expiryDate" placeholder="Expiry Date" value={form.expiryDate} onChange={handleChange} />
 
-          <button className="col-span-1 sm:col-span-2 md:col-span-3 bg-blue-900 text-white py-2 rounded hover:opacity-90">
+          <button className="col-span-1 sm:col-span-2 md:col-span-3 bg-blue-900 text-white py-2 rounded hover:opacity-90 w-full sm:w-auto">
             Save Product
           </button>
         </form>

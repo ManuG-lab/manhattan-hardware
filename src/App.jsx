@@ -122,10 +122,10 @@ function Inventory() {
 
         {/* CTA to Add Product */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-          <div className="flex gap-2">
-            <input className="border p-2" name="name" placeholder="Filter by Name" value={filters.name} onChange={handleFilterChange} />
-            <input className="border p-2" name="category" placeholder="Filter by Category" value={filters.category} onChange={handleFilterChange} />
-            <input className="border p-2" name="price" placeholder="Min Price" value={filters.price} onChange={handleFilterChange} />
+          <div className="flex flex-wrap gap-2">
+            <input className="border p-2 w-full sm:w-48" name="name" placeholder="Filter by Name" value={filters.name} onChange={handleFilterChange} />
+            <input className="border p-2 w-full sm:w-48" name="category" placeholder="Filter by Category" value={filters.category} onChange={handleFilterChange} />
+            <input className="border p-2 w-full sm:w-36" name="price" placeholder="Min Price" value={filters.price} onChange={handleFilterChange} />
           </div>
           <div className="flex gap-2">
             <Link to="/add" className="bg-blue-900 text-white px-4 py-2 rounded hover:opacity-90">Add Product</Link>
@@ -191,7 +191,7 @@ function Inventory() {
                           />
                           <button
                             onClick={() => addSale(p.id)}
-                            className="bg-red-600 text-white px-2 py-1 rounded hover:opacity-90 text-xs"
+                            className="bg-red-600 text-white px-2 py-1 rounded hover:opacity-90 text-xs w-full sm:w-auto"
                           >
                             Add Sale
                           </button>
@@ -199,7 +199,7 @@ function Inventory() {
                       ) : (
                         <button
                           onClick={() => startEdit(p)}
-                          className="bg-blue-900 text-white px-2 py-1 rounded hover:opacity-90 text-xs"
+                          className="bg-blue-900 text-white px-2 py-1 rounded hover:opacity-90 text-xs w-full sm:w-auto"
                         >
                           Sell Item
                         </button>
@@ -217,6 +217,8 @@ function Inventory() {
 }
 
 export default function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="bg-blue-900 text-white">
@@ -228,12 +230,33 @@ export default function App() {
               <div className="text-xs text-gray-200">Hardware Inventory</div>
             </div>
           </div>
-          <nav className="flex items-center gap-4">
-            <Link to="/" className="text-white hover:underline">Inventory</Link>
-            <Link to="/add" className="text-white hover:underline">Add Product</Link>
-            <Link to="/sales" className="text-white hover:underline">Sales</Link>
-          </nav>
+          <div className="flex items-center gap-4">
+            <button
+              className="sm:hidden p-2 rounded bg-white text-blue-900"
+              aria-label="Toggle menu"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M3 5h14a1 1 0 010 2H3a1 1 0 010-2zm0 4h14a1 1 0 010 2H3a1 1 0 010-2zm0 4h14a1 1 0 010 2H3a1 1 0 010-2z" clipRule="evenodd" />
+              </svg>
+            </button>
+
+            <nav className={`hidden sm:flex items-center gap-4 ${menuOpen ? 'block' : ''}`}>
+              <Link to="/" className="text-white hover:underline">Inventory</Link>
+              <Link to="/add" className="text-white hover:underline">Add Product</Link>
+              <Link to="/sales" className="text-white hover:underline">Sales</Link>
+            </nav>
+          </div>
         </div>
+        {menuOpen && (
+          <div className="sm:hidden bg-blue-800">
+            <div className="flex flex-col p-3 gap-2">
+              <Link to="/" onClick={() => setMenuOpen(false)} className="text-white">Inventory</Link>
+              <Link to="/add" onClick={() => setMenuOpen(false)} className="text-white">Add Product</Link>
+              <Link to="/sales" onClick={() => setMenuOpen(false)} className="text-white">Sales</Link>
+            </div>
+          </div>
+        )}
       </header>
 
       <main className="flex-1">
