@@ -9,8 +9,23 @@ export default function Sales() {
   const [variants,setVariants]=useState([]);
 
   useEffect(()=>{
-    fetch(SALES_URL).then(r=>r.json()).then(setSales);
-    fetch(PRODUCTS_URL).then(r=>r.json()).then(setProducts);
+    const fetchData = async () => {
+      const salesRes = await fetch(SALES_URL);
+      setSales(await salesRes.json());
+
+      const productsRes = await fetch(PRODUCTS_URL);
+      const productsData = await productsRes.json();
+      setProducts(productsData);
+
+      const allVariants = [];
+      for (const p of productsData) {
+        const res = await fetch(`${PRODUCTS_URL}/${p.id}/variants`);
+        const data = await res.json();
+        allVariants.push(...data);
+      }
+      setVariants(allVariants);
+    };
+    fetchData();
   },[]);
 
   const getVariant = (id)=>variants.find(v=>v.id===id);
@@ -20,14 +35,28 @@ export default function Sales() {
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Sales</h1>
 
-      {sales.map(s=>(
-        <div key={s.id} className="border p-2 mb-2">
-          Variant: {s.variant_id}<br/>
-          Qty: {s.quantity_sold}<br/>
-          Price: {s.price}<br/>
-          Total: {s.quantity_sold * s.price}
-        </div>
-      ))}
+      <table className="w-full table-auto border-collapse border border-gray-300">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="border border-gray-300 p-2">Product Name</th>
+            <th className="border border-gray-300 p-2">Variant ID</th>
+            <th className="border border-gray-300 p-2">Quantity Sold</th>
+            <th className="border border-gray-300 p-2">Price</th>
+            <th className="border border-gray-300 p-2">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sales.map(s=>(
+            <tr key={s.id} className="border border-gray-300">
+              <td className="border border-gray-300 p-2">{getProductName(getVariant(s.variant_id)?.product_id) || 'Unknown'}</td>
+              <td className="border border-gray-300 p-2">{s.variant_id}</td>
+              <td className="border border-gray-300 p-2">{s.quantity_sold}</td>
+              <td className="border border-gray-300 p-2">KES {s.price}</td>
+              <td className="border border-gray-300 p-2">KES {s.quantity_sold * s.price}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
