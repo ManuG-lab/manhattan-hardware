@@ -37,23 +37,23 @@ export default function AddProduct() {
   };
 
   return (
-    <div className="p-6 max-w-xl">
+    <div className="p-4 sm:p-6 max-w-xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">Add Product</h1>
 
       <input placeholder="Name"
-        className="border p-2 w-full mb-2"
+        className="border p-2 w-full mb-2 rounded"
         onChange={e=>setProduct({...product,name:e.target.value})}
       />
       <input placeholder="Category"
-        className="border p-2 w-full mb-4"
+        className="border p-2 w-full mb-4 rounded"
         onChange={e=>setProduct({...product,category:e.target.value})}
       />
 
       {variants.map((v,i)=>(
-        <div key={i} className="flex gap-2 mb-2">
-          <div className="w-16">{v.size}</div>
+        <div key={i} className="flex flex-col sm:flex-row gap-2 mb-2">
+          <div className="w-full sm:w-16 py-2 font-medium">{v.size}</div>
           <input placeholder="Price"
-            className="border p-1 w-24"
+            className="border p-1 w-full sm:w-24 rounded"
             onChange={e=>{
               const copy=[...variants];
               copy[i].price=e.target.value;
@@ -61,7 +61,7 @@ export default function AddProduct() {
             }}
           />
           <input placeholder="Stock"
-            className="border p-1 w-24"
+            className="border p-1 w-full sm:w-24 rounded"
             onChange={e=>{
               const copy=[...variants];
               copy[i].stockReceived=e.target.value;
@@ -72,7 +72,7 @@ export default function AddProduct() {
       ))}
 
       <button onClick={save}
-        className="bg-blue-900 text-white px-4 py-2 rounded mt-4">
+        className="bg-blue-900 text-white px-4 py-2 rounded mt-4 w-full sm:w-auto">
         Save Product
       </button>
     </div>

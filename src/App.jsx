@@ -74,28 +74,29 @@ function Inventory() {
   const categories = [...new Set(products.map(p => p.category))];
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">Inventory</h1>
+    <div className="p-4 sm:p-6">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4">Inventory</h1>
 
-      <div className="mb-4 flex gap-4">
+      <div className="mb-4 flex flex-col sm:flex-row gap-2 sm:gap-4">
         <input
           type="text"
           placeholder="Search by name"
           value={searchName}
           onChange={e => setSearchName(e.target.value)}
-          className="border p-2"
+          className="border p-2 rounded w-full sm:w-auto"
         />
         <select
           value={filterCategory}
           onChange={e => setFilterCategory(e.target.value)}
-          className="border p-2"
+          className="border p-2 rounded w-full sm:w-auto"
         >
           <option value="">All Categories</option>
           {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
         </select>
       </div>
 
-      <table className="w-full table-auto border-collapse border border-gray-300">
+      <div className="overflow-x-auto">
+      <table className="w-full table-auto border-collapse border border-gray-300 min-w-[600px]">
         <thead>
           <tr className="bg-gray-100">
             <th className="border border-gray-300 p-2">Product Name</th>
@@ -162,6 +163,7 @@ function Inventory() {
           })}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

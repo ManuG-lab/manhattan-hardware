@@ -32,10 +32,11 @@ export default function Sales() {
   const getProductName = (pid)=>products.find(p=>p.id===pid)?.name;
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6">
       <h1 className="text-2xl font-bold mb-4">Sales</h1>
 
-      <table className="w-full table-auto border-collapse border border-gray-300">
+      <div className="overflow-x-auto">
+      <table className="w-full table-auto border-collapse border border-gray-300 min-w-[500px]">
         <thead>
           <tr className="bg-gray-100">
             <th className="border border-gray-300 p-2">Product Name</th>
@@ -57,6 +58,7 @@ export default function Sales() {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }
