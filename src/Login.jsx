@@ -1,6 +1,7 @@
 //login.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import dayjs from "dayjs";
 
 const VALID_USER = {
@@ -12,16 +13,16 @@ export default function Login({ onLogin }) {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
   const submit = (e) => {
     e.preventDefault();
     if (username === VALID_USER.username && password === VALID_USER.password) {
       const user = { username, loggedAt: dayjs().format() };
       onLogin(user);
+      toast.success(`Welcome, ${username}!`);
       navigate('/');
     } else {
-      setError('Invalid username or password');
+      toast.error('Invalid username or password');
     }
   };
 
@@ -30,8 +31,6 @@ export default function Login({ onLogin }) {
       <div className="w-full max-w-md bg-white rounded-lg shadow p-6">
         <h2 className="text-2xl font-bold text-blue-900 mb-2">Sign In</h2>
         <p className="text-sm text-gray-600 mb-4">Manhattan Enterprises ltd — Inventory access</p>
-
-        {error && <div className="text-red-600 text-sm mb-2">{error}</div>}
 
         <form onSubmit={submit} className="space-y-3">
           <div>

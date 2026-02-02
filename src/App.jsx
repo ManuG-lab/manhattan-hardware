@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Link, Navigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import dayjs from "dayjs";
 import Sales from "./Sales";
 import AddProduct from "./AddProduct";
@@ -20,43 +21,64 @@ function Inventory() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const productsRes = await fetch(PRODUCTS_URL);
-      const products = await productsRes.json();
-      setProducts(products);
+      try {
+        const productsRes = await fetch(PRODUCTS_URL);
+        const products = await productsRes.json();
+        setProducts(products);
 
-      const allVariants = [];
-      for (const p of products) {
-        const res = await fetch(`${PRODUCTS_URL}/${p.id}/variants`);
-        const data = await res.json();
-        allVariants.push(...data);
+        const allVariants = [];
+        for (const p of products) {
+          const res = await fetch(`${PRODUCTS_URL}/${p.id}/variants`);
+          const data = await res.json();
+          allVariants.push(...data);
+        }
+        setVariants(allVariants);
+
+        const salesRes = await fetch("https://manhattan-hardware-backend-1.onrender.com/sales");
+        const salesData = await salesRes.json();
+        setSales(salesData);
+      } catch (error) {
+        toast.error("Failed to load inventory data");
       }
-      setVariants(allVariants);
-
-      const salesRes = await fetch("https://manhattan-hardware-backend-1.onrender.com/sales");
-      const salesData = await salesRes.json();
-      setSales(salesData);
     };
     fetchData();
   }, []);
 
   const sellVariant = async (variant) => {
-    await fetch("https://manhattan-hardware-backend-1.onrender.com/sales", {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({
-        variantId: variant.id,
-        quantitySold: Number(sellQty),
-        price: variant.price
-      })
-    });
-    setSellVariantId(null);
-    setSellQty("");
-    // Reload variants and sales
-    const res = await fetch(`${PRODUCTS_URL}/${variant.product_id}/variants`);
-    const data = await res.json();
-    setVariants(prev => [...prev.filter(v => v.product_id !== variant.product_id), ...data]);
-    const salesRes = await fetch("https://manhattan-hardware-backend-1.onrender.com/sales");
-    setSales(await salesRes.json());
+    const qty = Number(sellQty);
+    if (!qty || qty <= 0) {
+      toast.error("Please enter a valid quantity");
+      return;
+    }
+
+    const currentStock = getCurrentStock(variant.id);
+    if (qty > currentStock) {
+      toast.error(`Only ${currentStock} items available in stock`);
+      return;
+    }
+
+    try {
+      await fetch("https://manhattan-hardware-backend-1.onrender.com/sales", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+          variantId: variant.id,
+          quantitySold: qty,
+          price: variant.price
+        })
+      });
+      setSellVariantId(null);
+      setSellQty("");
+      // Reload variants and sales
+      const res = await fetch(`${PRODUCTS_URL}/${variant.product_id}/variants`);
+      const data = await res.json();
+      setVariants(prev => [...prev.filter(v => v.product_id !== variant.product_id), ...data]);
+      const salesRes = await fetch("https://manhattan-hardware-backend-1.onrender.com/sales");
+      setSales(await salesRes.json());
+      toast.success(`Sold ${qty} x ${variant.size} for KES ${qty * variant.price}`);
+    } catch (error) {
+      toast.error("Failed to complete sale");
+    }
   };
 
   const getCurrentStock = (variantId) => {

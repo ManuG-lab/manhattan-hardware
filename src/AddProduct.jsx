@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 const PRODUCTS_URL = "https://manhattan-hardware-backend-1.onrender.com/products";
 const VARIANTS_URL = "https://manhattan-hardware-backend-1.onrender.com/variants";
@@ -12,6 +13,11 @@ export default function AddProduct() {
   ]);
 
   const save = async () => {
+    if (!product.name || !product.category) {
+      toast.error("Please enter product name and category");
+      return;
+    }
+
     const res = await fetch(PRODUCTS_URL, {
       method:"POST",
       headers:{"Content-Type":"application/json"},
@@ -19,6 +25,7 @@ export default function AddProduct() {
     });
     const { id } = await res.json();
 
+    let variantsAdded = 0;
     for (let v of variants) {
       if (!v.price) continue;
       await fetch(VARIANTS_URL, {
@@ -31,9 +38,18 @@ export default function AddProduct() {
           stockReceived: Number(v.stockReceived)
         })
       });
+      variantsAdded++;
     }
 
-    alert("Product added with variants!");
+    toast.success(`Product "${product.name}" added with ${variantsAdded} variant(s)!`);
+    
+    // Reset form
+    setProduct({ name:"", category:"" });
+    setVariants([
+      { size:"20LT", price:"", stockReceived:"" },
+      { size:"4LT", price:"", stockReceived:"" },
+      { size:"1LT", price:"", stockReceived:"" }
+    ]);
   };
 
   return (
